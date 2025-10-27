@@ -1,0 +1,141 @@
+/* Full-Screen Gradient Background */
+body {
+  min-height: 100vh;
+  margin: 0;
+  background: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Container */
+.container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  padding: 60px 16px 40px 16px;
+  box-sizing: border-box;
+  background: transparent; /* Remove boxed white effect */
+}
+
+/* Title styles */
+.title {
+  text-align: center;
+  font-weight: 700;
+  font-size: 2.6rem;
+  margin-bottom: 40px;
+  color: #22223b;
+  text-shadow: 0 3px 18px rgba(50, 50, 93, 0.1);
+  letter-spacing: 1px;
+}
+
+/* Error message */
+.error {
+  color: #dc2626;
+  font-weight: 600;
+  text-align: center;
+  margin: 20px 0;
+  font-size: 1.1rem;
+}
+
+/* Product card */
+.product-card {
+  width: 100%;
+  background: linear-gradient(135deg, #eeb2f1 0%, #b0eaff 100%);
+  margin-bottom: 32px;
+  padding: 32px 30px 25px 30px;
+  border-radius: 22px;
+  border: none;
+  box-shadow:
+    0 12px 50px rgba(33, 60, 103, 0.17),
+    0 2px 9px rgba(170, 97, 225, 0.12);
+  animation: fadeInScale 0.7s cubic-bezier(0.9, 0.15, 0.21, 0.91) forwards;
+  position: relative;
+  overflow: visible;
+  z-index: 0;
+  backdrop-filter: blur(2px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.product-card:hover {
+  transform: translateY(-6px) scale(1.018);
+  box-shadow:
+    0 24px 90px rgba(33, 60, 103, 0.25),
+    0 2px 16px rgba(170, 97, 225, 0.16);
+  z-index: 1;
+}
+
+/* Title for each product */
+.product-card h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #34344a;
+  text-shadow: 0 2px 7px rgba(80, 40, 95, 0.1);
+}
+
+/* Badges and Prices */
+.category-badge {
+  display: inline-block;
+  padding: 5px 18px;
+  font-size: 0.99rem;
+  font-weight: 700;
+  color: #f9fafc;
+  background: linear-gradient(45deg, #4361ee, #a1c4fd);
+  border-radius: 15px;
+  box-shadow: 0 2px 9px rgba(83, 86, 235, 0.1);
+  margin-bottom: 8px;
+  margin-top: 6px;
+  align-self: start;
+  user-select: none;
+  transition: background 0.3s;
+}
+
+.price-text {
+  font-size: 1.17rem;
+  font-weight: 700;
+  color: #21bfae;
+  margin-bottom: 8px;
+  letter-spacing: 0.3px;
+}
+
+/* Product description */
+.product-card p {
+  font-size: 1.03rem;
+  margin-top: 7px;
+  color: #364e68;
+  line-height: 1.65;
+}
+
+/* Animation for fading cards in */
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.93);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .container {
+    max-width: 97vw;
+    padding: 32px 2vw 18px 2vw;
+  }
+  .product-card {
+    padding: 20px 12px 17px 12px;
+  }
+  .title {
+    font-size: 2rem;
+  }
+  .product-card h3 {
+    font-size: 1.17rem;
+  }
+}
