@@ -1,4 +1,3 @@
-const { produceBase } = require("create");
 const Product = require("../models/productModels");
 
 //business logic
