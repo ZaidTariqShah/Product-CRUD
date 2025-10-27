@@ -9,7 +9,9 @@ function App() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/products");
+        const res = await fetch(
+          "https://product-crud-1-cawf.onrender.com/api/products"
+        );
         const data = await res.json();
         if (data.success && data.products) {
           setProducts(data.products);

@@ -6,7 +6,11 @@ const connectDB = require("./config/db");
 const cors = require("cors");
 app.use(
   cors({
-    origin: "http://localhost:5173", // allow your Vite dev server
+    origin: [
+      "https://product-crud-umber.vercel.app", // your Vercel frontend
+      "http://localhost:5173", // local dev, optional
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
 
