@@ -146,29 +146,33 @@ function App() {
       {/* 🟢 SHOW PRODUCTS */}
       {!loading && !error && (
         <div>
-          {products.map((prod) => (
-            <div key={prod._id} className="product-card">
-              <h3>{prod.name}</h3>
-              <p>
-                <strong>Price:</strong> {prod.price}
-              </p>
-              <p>
-                <strong>Category:</strong> {prod.category}
-              </p>
-              <p>{prod.description}</p>
-              <div className="button-group">
-                <button className="edit-btn" onClick={() => handleEdit(prod)}>
-                  Edit
-                </button>
-                <button
-                  className="delete-btn"
-                  onClick={() => handleDelete(prod._id)}
-                >
-                  Delete
-                </button>
+          {products.length === 0 ? (
+            <p>No products found.</p>
+          ) : (
+            products.map((prod) => (
+              <div key={prod._id} className="product-card">
+                <h3>{prod.name}</h3>
+                <p>
+                  <strong>Price:</strong> {prod.price}
+                </p>
+                <p>
+                  <strong>Category:</strong> {prod.category}
+                </p>
+                <p>{prod.description}</p>
+                <div className="button-group">
+                  <button className="edit-btn" onClick={() => handleEdit(prod)}>
+                    Edit
+                  </button>
+                  <button
+                    className="delete-btn"
+                    onClick={() => handleDelete(prod._id)}
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       )}
 
