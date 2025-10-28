@@ -1,184 +1,179 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import "./App.css";
 
 function App() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [editId, setEditId] = useState(null);
-  const [form, setForm] = useState({
+  const [editMode, setEditMode] = useState(false);
+  const [currentId, setCurrentId] = useState(null);
+  const [noProducts, setNoProducts] = useState(false);
+  const [product, setProducts] = useState([]);
+  const [form, SetForm] = useState({
     name: "",
     price: "",
-    category: "",
     description: "",
+    category: "",
   });
 
-  // 🟢 FETCH PRODUCTS (READ)
-  const fetchProducts = async () => {
-    setLoading(true);
-    setError("");
+  //Get
+  const getData = async () => {
     try {
-      const res = await fetch(
+      const res = await axios.get(
         "https://product-crud-1-cawf.onrender.com/api/products"
       );
-      const data = await res.json();
+      const data = res.data;
       if (data.success && data.products) {
         setProducts(data.products);
+        setNoProducts(false);
       } else {
         setProducts([]);
-        setError(data.message || "No Products Found");
+        setNoProducts(true);
       }
-    } catch {
-      setError("Error fetching data");
-      setProducts([]);
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      toast.error("Failed to fetch products 😢");
+      console.error(err);
     }
   };
 
   useEffect(() => {
-    fetchProducts();
+    getData();
   }, []);
 
-  // 🟢 ADD OR UPDATE PRODUCT
-  const handleSubmit = async (e) => {
+  function handleClick(e) {
+    SetForm({ ...form, [e.target.name]: e.target.value });
+  }
+
+  //Post
+  const postData = async (e) => {
     e.preventDefault();
     try {
-      const method = editId ? "PUT" : "POST";
-      const url = editId
-        ? `https://product-crud-1-cawf.onrender.com/api/products/${editId}`
-        : "https://product-crud-1-cawf.onrender.com/api/products";
-
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, price: Number(form.price) }),
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        toast.success(editId ? "✏️ Product updated!" : "✅ Product added!");
-        setForm({ name: "", price: "", category: "", description: "" });
-        setEditId(null);
-        await fetchProducts();
-      } else {
-        toast.error(data.message || "Failed to save product");
-      }
-    } catch {
-      toast.error("Error saving product");
-    }
-  };
-
-  // ✏️ EDIT PRODUCT
-  const handleEdit = (prod) => {
-    setForm({
-      name: prod.name,
-      price: prod.price,
-      category: prod.category,
-      description: prod.description,
-    });
-    setEditId(prod._id);
-  };
-
-  // 🗑️ DELETE PRODUCT
-  const handleDelete = async (id) => {
-    try {
-      const res = await fetch(
-        `https://product-crud-1-cawf.onrender.com/api/products/${id}`,
-        {
-          method: "DELETE",
-        }
+      await axios.post(
+        "https://product-crud-1-cawf.onrender.com/api/products",
+        form
       );
-      const data = await res.json();
-      if (res.ok) {
-        toast.success("🗑️ Product deleted!");
-        await fetchProducts();
-      } else {
-        toast.error(data.message || "Failed to delete");
-      }
-    } catch {
-      toast.error("Error deleting product");
+      toast.success("Product added successfully 🎉");
+      await getData();
+      SetForm({ name: "", price: "", description: "", category: "" });
+    } catch (err) {
+      toast.error("Failed to add product ❌");
+      console.error(err);
     }
+  };
+
+  //Delete
+  const deleteData = async (id) => {
+    try {
+      await axios.delete(
+        `https://product-crud-1-cawf.onrender.com/api/products/${id}`
+      );
+      toast.success("Product deleted 🗑️");
+      await getData();
+    } catch (err) {
+      toast.error("Failed to delete product ❌");
+      console.error(err);
+    }
+  };
+
+  //Update
+  const updateProduct = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.put(
+        `https://product-crud-1-cawf.onrender.com/api/products/${currentId}`,
+        form
+      );
+      toast.success("Product updated ✏️");
+      await getData();
+      SetForm({
+        name: "",
+        price: "",
+        description: "",
+        category: "",
+      });
+      setEditMode(false);
+      setCurrentId(null);
+    } catch (err) {
+      toast.error("Failed to update product ❌");
+      console.error(err);
+    }
+  };
+
+  const handleEdit = (items) => {
+    SetForm({
+      name: items.name,
+      price: items.price,
+      description: items.description,
+      category: items.category,
+    });
+    setEditMode(true);
+    setCurrentId(items._id);
   };
 
   return (
-    <div className="container">
-      <h2 className="title">{editId ? "Edit Product" : "Add Product"}</h2>
+    <>
+      <Toaster position="top-center" />
+      <h1 style={{ textAlign: "center", marginBottom: "20px" }}>📦 Products</h1>
 
-      {/* 🧾 CREATE / EDIT FORM */}
-      <form onSubmit={handleSubmit} className="create-form">
-        <input
-          placeholder="Name"
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-          required
-        />
-        <input
-          placeholder="Price"
-          value={form.price}
-          onChange={(e) => setForm({ ...form, price: e.target.value })}
-          required
-        />
-        <input
-          placeholder="Category"
-          value={form.category}
-          onChange={(e) => setForm({ ...form, category: e.target.value })}
-          required
-        />
-        <textarea
-          placeholder="Description"
-          value={form.description}
-          onChange={(e) => setForm({ ...form, description: e.target.value })}
-          required
-        ></textarea>
-        <button type="submit">
-          {editId ? "Update Product" : "Add Product"}
-        </button>
-      </form>
+      <div>
+        <form onSubmit={editMode ? updateProduct : postData}>
+          <label>Name :- </label>
+          <input
+            placeholder="Name here"
+            name="name"
+            value={form.name}
+            required
+            onChange={handleClick}
+          />
+          <br />
+          <br />
+          <label>Price :- </label>
+          <input
+            placeholder="Price here"
+            name="price"
+            value={form.price}
+            required
+            onChange={handleClick}
+          />
+          <br />
+          <br />
+          <label>Description :- </label>
+          <input
+            placeholder="Description here"
+            name="description"
+            value={form.description}
+            required
+            onChange={handleClick}
+          />
+          <br />
+          <br />
+          <label>Category :- </label>
+          <input
+            placeholder="Category here"
+            name="category"
+            value={form.category}
+            required
+            onChange={handleClick}
+          />
+          <br />
+          <br />
+          <button type="submit">
+            {editMode ? "Update Product" : "Add Product"}
+          </button>
+        </form>
+      </div>
 
-      {loading && <p>Loading...</p>}
-      {error && <p className="error">{error}</p>}
-
-      {/* 🟢 SHOW PRODUCTS */}
-      {!loading && !error && (
-        <div>
-          {products.length === 0 ? (
-            <p style={{ color: "red", textAlign: "center", marginTop: "2rem" }}>
-              There is No Product
-            </p>
-          ) : (
-            products.map((prod) => (
-              <div key={prod._id} className="product-card">
-                <h3>{prod.name}</h3>
-                <p>
-                  <strong>Price:</strong> {prod.price}
-                </p>
-                <p>
-                  <strong>Category:</strong> {prod.category}
-                </p>
-                <p>{prod.description}</p>
-                <div className="button-group">
-                  <button className="edit-btn" onClick={() => handleEdit(prod)}>
-                    Edit
-                  </button>
-                  <button
-                    className="delete-btn"
-                    onClick={() => handleDelete(prod._id)}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      )}
-
-      {/* 🔔 Toast Container */}
-      <Toaster position="top-right" reverseOrder={false} />
-    </div>
+      {noProducts && <h1>No Products Found</h1>}
+      {product.map((items, index) => (
+        <ul key={index}>
+          <li>Name : {items.name}</li>
+          <li>Price : {items.price}</li>
+          <li>Description : {items.description}</li>
+          <li>Category : {items.category}</li>
+          <button onClick={() => deleteData(items._id)}>Delete</button>
+          <button onClick={() => handleEdit(items)}>Edit</button>
+        </ul>
+      ))}
+    </>
   );
 }
 
