@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
+import toast, { Toaster } from "react-hot-toast";
 import "./App.css";
 
 function App() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [editId, setEditId] = useState(null);
   const [form, setForm] = useState({
     name: "",
     price: "",
@@ -34,37 +36,80 @@ function App() {
     fetchProducts();
   }, []);
 
-  // 🟢 CREATE PRODUCT (POST)
+  // 🟢 ADD OR UPDATE PRODUCT
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Cast price to number to match backend schema
+      const method = editId ? "PUT" : "POST";
+      const url = editId
+        ? `https://product-crud-1-cawf.onrender.com/api/products/${editId}`
+        : "https://product-crud-1-cawf.onrender.com/api/products";
+
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, price: Number(form.price) }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        if (editId) {
+          setProducts((prev) =>
+            prev.map((p) => (p._id === editId ? data.product : p))
+          );
+          toast.success("✏️ Product updated!");
+        } else {
+          setProducts([...products, data.product]);
+          toast.success("✅ Product added!");
+        }
+        setForm({ name: "", price: "", category: "", description: "" });
+        setEditId(null);
+      } else {
+        toast.error(data.message || "Failed to save product");
+      }
+    } catch {
+      toast.error("Error saving product");
+    }
+  };
+
+  // ✏️ EDIT PRODUCT
+  const handleEdit = (prod) => {
+    setForm({
+      name: prod.name,
+      price: prod.price,
+      category: prod.category,
+      description: prod.description,
+    });
+    setEditId(prod._id);
+  };
+
+  // 🗑️ DELETE PRODUCT
+  const handleDelete = async (id) => {
+    try {
       const res = await fetch(
-        "https://product-crud-1-cawf.onrender.com/api/products",
+        `https://product-crud-1-cawf.onrender.com/api/products/${id}`,
         {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...form, price: Number(form.price) }),
+          method: "DELETE",
         }
       );
       const data = await res.json();
       if (res.ok) {
-        alert("✅ Product added successfully!");
-        setProducts([...products, data.product]);
-        setForm({ name: "", price: "", category: "", description: "" });
+        toast.success("🗑️ Product deleted!");
+        setProducts(products.filter((p) => p._id !== id));
       } else {
-        alert(data.message || "Failed to create product");
+        toast.error(data.message || "Failed to delete");
       }
-    } catch (err) {
-      alert("Something went wrong!");
+    } catch {
+      toast.error("Error deleting product");
     }
   };
 
   return (
     <div className="container">
-      <h2 className="title">Products</h2>
+      <h2 className="title">{editId ? "Edit Product" : "Add Product"}</h2>
 
-      {/* 🧾 CREATE FORM */}
+      {/* 🧾 CREATE / EDIT FORM */}
       <form onSubmit={handleSubmit} className="create-form">
         <input
           placeholder="Name"
@@ -90,7 +135,9 @@ function App() {
           onChange={(e) => setForm({ ...form, description: e.target.value })}
           required
         ></textarea>
-        <button type="submit">Add Product</button>
+        <button type="submit">
+          {editId ? "Update Product" : "Add Product"}
+        </button>
       </form>
 
       {loading && <p>Loading...</p>}
@@ -109,10 +156,24 @@ function App() {
                 <strong>Category:</strong> {prod.category}
               </p>
               <p>{prod.description}</p>
+              <div className="button-group">
+                <button className="edit-btn" onClick={() => handleEdit(prod)}>
+                  Edit
+                </button>
+                <button
+                  className="delete-btn"
+                  onClick={() => handleDelete(prod._id)}
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           ))}
         </div>
       )}
+
+      {/* 🔔 Toast Container */}
+      <Toaster position="top-right" reverseOrder={false} />
     </div>
   );
 }
