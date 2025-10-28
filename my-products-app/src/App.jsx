@@ -15,24 +15,29 @@ function App() {
   });
 
   // 🟢 FETCH PRODUCTS (READ)
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await fetch(
-          "https://product-crud-1-cawf.onrender.com/api/products"
-        );
-        const data = await res.json();
-        if (data.success && data.products) {
-          setProducts(data.products);
-        } else {
-          setError(data.message || "No Products Found");
-        }
-      } catch {
-        setError("Error fetching data");
-      } finally {
-        setLoading(false);
+  const fetchProducts = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch(
+        "https://product-crud-1-cawf.onrender.com/api/products"
+      );
+      const data = await res.json();
+      if (data.success && data.products) {
+        setProducts(data.products);
+      } else {
+        setProducts([]);
+        setError(data.message || "No Products Found");
       }
-    };
+    } catch {
+      setError("Error fetching data");
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchProducts();
   }, []);
 
@@ -54,17 +59,10 @@ function App() {
       const data = await res.json();
 
       if (res.ok) {
-        if (editId) {
-          setProducts((prev) =>
-            prev.map((p) => (p._id === editId ? data.product : p))
-          );
-          toast.success("✏️ Product updated!");
-        } else {
-          setProducts([...products, data.product]);
-          toast.success("✅ Product added!");
-        }
+        toast.success(editId ? "✏️ Product updated!" : "✅ Product added!");
         setForm({ name: "", price: "", category: "", description: "" });
         setEditId(null);
+        await fetchProducts();
       } else {
         toast.error(data.message || "Failed to save product");
       }
@@ -96,7 +94,7 @@ function App() {
       const data = await res.json();
       if (res.ok) {
         toast.success("🗑️ Product deleted!");
-        setProducts(products.filter((p) => p._id !== id));
+        await fetchProducts();
       } else {
         toast.error(data.message || "Failed to delete");
       }
@@ -147,7 +145,9 @@ function App() {
       {!loading && !error && (
         <div>
           {products.length === 0 ? (
-            <p>No products found.</p>
+            <p style={{ color: "red", textAlign: "center", marginTop: "2rem" }}>
+              There is No Product
+            </p>
           ) : (
             products.map((prod) => (
               <div key={prod._id} className="product-card">
