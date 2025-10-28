@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import "./App.css";
 
 function App() {
@@ -17,10 +16,10 @@ function App() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get(
+        const res = await fetch(
           "https://product-crud-1-cawf.onrender.com/api/products"
         );
-        const data = res.data;
+        const data = await res.json();
         if (data.success && data.products) {
           setProducts(data.products);
         } else {
@@ -39,16 +38,25 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
+      // Cast price to number to match backend schema
+      const res = await fetch(
         "https://product-crud-1-cawf.onrender.com/api/products",
-        form
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...form, price: Number(form.price) }),
+        }
       );
-      const data = res.data;
-      alert("✅ Product added successfully!");
-      setProducts([...products, data.product]);
-      setForm({ name: "", price: "", category: "", description: "" });
+      const data = await res.json();
+      if (res.ok) {
+        alert("✅ Product added successfully!");
+        setProducts([...products, data.product]);
+        setForm({ name: "", price: "", category: "", description: "" });
+      } else {
+        alert(data.message || "Failed to create product");
+      }
     } catch (err) {
-      alert(err.response?.data?.message || "Something went wrong!");
+      alert("Something went wrong!");
     }
   };
 
