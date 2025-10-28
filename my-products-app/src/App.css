@@ -1,105 +1,138 @@
 /* App.css */
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #ece9e6, #ffffff);
+  background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
   margin: 0;
   padding: 2rem;
-  color: #333;
+  color: #2c3e50;
+  min-height: 100vh;
 }
 
 form {
-  background: #fafafa;
+  background: #ffffff;
   padding: 2rem;
   margin-bottom: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
+  transition: box-shadow 0.3s ease;
+}
+
+form:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
 }
 
 label {
-  font-weight: 600;
+  font-weight: 700;
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.6rem;
+  color: #34495e;
 }
 
 input {
+  box-sizing: border-box;
   width: 100%;
-  padding: 0.75rem 1rem;
-  margin-bottom: 1rem;
-  border: 1px solid #bbb;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: border-color 0.3s ease;
+  padding: 0.85rem 1.2rem;
+  margin-bottom: 1.2rem;
+  border: 2px solid #34495e;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 input:focus {
-  border-color: #4a90e2;
+  border-color: #2980b9;
+  box-shadow: 0 0 10px rgba(41, 128, 185, 0.6);
   outline: none;
 }
 
 button {
-  background: linear-gradient(90deg, #4a90e2, #357abd);
+  background: #2980b9;
   color: white;
   font-weight: 700;
-  padding: 0.75rem 1.5rem;
+  padding: 0.9rem 1.5rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
-  font-size: 1rem;
-  transition: background 0.3s ease;
+  font-size: 1.1rem;
+  transition:
+    background 0.3s ease,
+    transform 0.2s ease,
+    box-shadow 0.3s ease;
   width: 100%;
+  box-shadow: 0 4px 15px rgba(41, 128, 185, 0.4);
 }
 
 button:hover {
-  background: linear-gradient(90deg, #357abd, #2a5da8);
+  background: #3498db;
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.6);
 }
 
 ul {
   max-width: 600px;
-  margin: 1rem auto;
-  background: white;
-  padding: 1rem 2rem;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  list-style-type: none;
+  margin: 1.5rem auto;
+  background: #ffffff;
+  padding: 1.5rem 2.5rem;
+  border-radius: 15px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+  list-style: none;
+  transition: box-shadow 0.3s ease;
+}
+
+ul:hover {
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
 }
 
 ul li {
-  margin-bottom: 0.6rem;
-  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.15rem;
+  color: #34495e;
 }
 
 ul button {
   margin-top: 1rem;
   margin-right: 1rem;
-  padding: 0.4rem 1rem;
-  font-size: 0.9rem;
-  border-radius: 6px;
+  padding: 0.6rem 1.3rem;
+  font-size: 1rem;
+  border-radius: 8px;
   background: #e74c3c;
   border: none;
   color: white;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition:
+    background 0.3s ease,
+    transform 0.2s ease;
+  box-shadow: 0 4px 15px rgba(231, 76, 60, 0.5);
 }
 
 ul button:hover {
   background: #c0392b;
+  transform: scale(1.1);
+  box-shadow: 0 6px 25px rgba(192, 57, 43, 0.7);
 }
 
 ul button:last-child {
-  background: #3498db;
+  background: #2980b9;
+  box-shadow: 0 4px 15px rgba(41, 128, 185, 0.5);
 }
 
 ul button:last-child:hover {
-  background: #2980b9;
+  background: #3498db;
+  transform: scale(1.1);
+  box-shadow: 0 6px 25px rgba(52, 152, 219, 0.7);
 }
 
 h1 {
   text-align: center;
-  color: #666;
-  font-weight: 600;
-  margin: 2rem 0;
+  color: #2c3e50;
+  font-weight: 700;
+  margin: 3rem 0;
+  font-size: 2.8rem;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
 }
