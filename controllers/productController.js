@@ -27,33 +27,40 @@ const getProducts = async (req, res) => {
 const createProduct = async (req, res) => {
   try {
     const { name, price, description, category } = req.body;
-    const newProducts = new Product({ name, price, description, category });
-    await newProducts.save();
-    res.status(200).json({ product: newProducts });
+    if (!name || !price || !description || !category) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
+    }
+    const newProduct = new Product({ name, price, description, category });
+    await newProduct.save();
+    res.status(201).json({ success: true, product: newProduct });
   } catch (err) {
+    console.error("Create Product Error:", err); // log the actual error!
     res.status(500).json({
       success: false,
       message: "Internal Server Error",
+      error: err.message, // optional: provide error message for easier debugging
     });
   }
 };
 
 const updateProduct = async (req, res) => {
-  const { id } = req.params;
-  const { name, price, description, category } = req.body;
-  const updatedProduct = await Product.findByIdAndUpdate(
-    id,
-    {
-      name,
-      price,
-      description,
-      category,
-    },
-    { new: true }
-  );
-  res.status(200).json({ product: updateProduct });
-
   try {
+    const { id } = req.params;
+    const { name, price, description, category } = req.body;
+    const updatedProduct = await Product.findByIdAndUpdate(
+      id,
+      {
+        name,
+        price,
+        description,
+        category,
+      },
+      { new: true }
+    );
+    res.status(200).json({ product: updatedProduct });
   } catch (err) {
     res.status(500).json({
       success: false,
