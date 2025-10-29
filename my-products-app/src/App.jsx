@@ -8,6 +8,7 @@ function App() {
   const [currentId, setCurrentId] = useState(null);
   const [noProducts, setNoProducts] = useState(false);
   const [product, setProducts] = useState([]);
+  const [searchData, setSearchData] = useState("");
   const [form, SetForm] = useState({
     name: "",
     price: "",
@@ -112,9 +113,21 @@ function App() {
   return (
     <>
       <Toaster position="top-center" />
-      <h1 style={{ textAlign: "center", marginBottom: "20px" }}>📦 Products</h1>
-
-      <div>
+      <h1>
+        <span role="img" aria-label="box">
+          📦
+        </span>{" "}
+        Products
+      </h1>
+      <div className="form-card">
+        <div className="search-row">
+          <input
+            className="search-input"
+            onChange={(e) => setSearchData(e.target.value)}
+            placeholder="🔍 Search products..."
+            value={searchData}
+          />
+        </div>
         <form onSubmit={editMode ? updateProduct : postData}>
           <label>Name :- </label>
           <input
@@ -124,8 +137,6 @@ function App() {
             required
             onChange={handleClick}
           />
-          <br />
-          <br />
           <label>Price :- </label>
           <input
             placeholder="Price here"
@@ -134,8 +145,6 @@ function App() {
             required
             onChange={handleClick}
           />
-          <br />
-          <br />
           <label>Description :- </label>
           <input
             placeholder="Description here"
@@ -144,8 +153,6 @@ function App() {
             required
             onChange={handleClick}
           />
-          <br />
-          <br />
           <label>Category :- </label>
           <input
             placeholder="Category here"
@@ -154,25 +161,30 @@ function App() {
             required
             onChange={handleClick}
           />
-          <br />
-          <br />
           <button type="submit">
             {editMode ? "Update Product" : "Add Product"}
           </button>
         </form>
       </div>
-
       {noProducts && <h1>No Products Found</h1>}
-      {product.map((items, index) => (
-        <ul key={index}>
-          <li>Name : {items.name}</li>
-          <li>Price : {items.price}</li>
-          <li>Description : {items.description}</li>
-          <li>Category : {items.category}</li>
-          <button onClick={() => deleteData(items._id)}>Delete</button>
-          <button onClick={() => handleEdit(items)}>Edit</button>
-        </ul>
-      ))}
+      {product
+        .filter((items) => {
+          if (searchData === "") return true;
+          return (
+            items.name.toLowerCase().includes(searchData.toLowerCase()) ||
+            items.category.toLowerCase().includes(searchData.toLowerCase())
+          );
+        })
+        .map((items, index) => (
+          <ul key={index}>
+            <li>Name : {items.name}</li>
+            <li>Price : {items.price}</li>
+            <li>Description : {items.description}</li>
+            <li>Category : {items.category}</li>
+            <button onClick={() => deleteData(items._id)}>Delete</button>
+            <button onClick={() => handleEdit(items)}>Edit</button>
+          </ul>
+        ))}
     </>
   );
 }
