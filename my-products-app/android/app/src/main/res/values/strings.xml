@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">ProductsApp</string>
+    <string name="title_activity_main">ProductsApp</string>
+    <string name="package_name">com.zaid.products</string>
+    <string name="custom_url_scheme">com.zaid.products</string>
+</resources>
