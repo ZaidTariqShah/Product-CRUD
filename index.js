@@ -7,13 +7,11 @@ const cors = require("cors");
 app.use(
   cors({
     origin: [
-      "https://product-crud-umber.vercel.app",
-      "http://localhost:5173",
-      "http://10.0.2.2", // Android emulator
-      "http://localhost", // Android webview
-      "*", // optional fallback for testing
+      "https://product-crud-umber.vercel.app", // your frontend
+      "http://localhost:5173", // local dev
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
   })
 );
 
